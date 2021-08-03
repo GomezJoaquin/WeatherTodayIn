@@ -51,6 +51,9 @@ function consultarAPI(ciudad, pais) {
     fetch(url)
         .then(respuesta => respuesta.json())
         .then(datos => {
+
+            limpiarHTML();
+
             if (datos.cod === "404") {
                 mostrarError('Ciudad no encontrada.');
                 return;
@@ -64,25 +67,50 @@ function consultarAPI(ciudad, pais) {
 }
 
 function mostrarClima(datos) {
-    const { main: { temp, temp_max, temp_min } } = datos;
 
-    centigrados = temp - 273.15; //convierte a grados C°.
-
+    // Formatear el Clima...
+  
+    const { name, main: { temp, temp_max, temp_min } } = datos;
+  
+  
+    const grados = KelvinACentigrados(temp);
+    const min = KelvinACentigrados(temp_max);
+    const max = KelvinACentigrados(temp_min);
+    
+    const nombreCiudad = document.createElement('p');
+    nombreCiudad.innerHTML = `Clima en: ${name}`;
+    nombreCiudad.classList.add('font-bold', 'text-2xl')
+  
     const actual = document.createElement('p');
-    actual.innerHTML = `${centigrados} &#8451;`;
-    actual.classList.add('font-bold', 'text-6xl');
-
-    const resultadoDiv = documen.createElement('div');
-    resultadoDiv.classList.add('text-center', 'text-white');
+    actual.innerHTML = `${grados} &#8451;`;
+    actual.classList.add('font-bold', 'text-6xl')
+  
+    const tempMaxima = document.createElement('p');
+    tempMaxima.innerHTML = `Max: ${max} &#8451;`;
+    tempMaxima.classList.add('text-xl')
+  
+  
+    const tempMinima = document.createElement('p');
+    tempMinima.innerHTML = `Min: ${min} &#8451;`;
+    tempMinima.classList.add('text-xl')
+  
+  
+    const resultadoDiv = document.createElement('div');
+    resultadoDiv.classList.add('text-center', 'text-white')
+    resultadoDiv.appendChild(nombreCiudad);
     resultadoDiv.appendChild(actual);
-
+    resultadoDiv.appendChild(tempMaxima);
+    resultadoDiv.appendChild(tempMinima);
+  
     resultado.appendChild(resultadoDiv);
 }
 
+function limpiarHTML() {
+    while (resultado.firstChild) {
+        resultado.removeChild(resultado.firstChild);
+    }
+}
 
-
-
-
-
+const kelvinACentigrados = grados => { parseInt(grados - 273.15); }
 
 
